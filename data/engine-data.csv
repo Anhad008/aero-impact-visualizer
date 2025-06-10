@@ -1,0 +1,5 @@
+Engine Family, Engine Model, Combustor, Fuel, Bypass Ratio, Pressure Ratio, Rated Thrust (kN), Phase, Power Setting (%), Fuel Flow (kg/s), Emission Index HC (g / kg fuel), Emission Index CO (g / kg fuel), Emission Index NOx (g / kg fuel)
+CFM56, 5B4, DAC-II, Jet A, 5.9, 27.7, 120.1, TAKE-OFF, 100, 1.140, 0.10, 1.40, 18.40
+CFM56, 5B4, DAC-II, Jet A, 5.9, 27.7, 120.1, CLIMB OUT, 85, 0.950, 0.20, 3.60, 13.60 
+CFM56, 5B4, DAC-II, Jet A, 5.9, 27.7, 120.1, APPROACH, 30, 0.340, 5.30, 29.10, 6.50 
+CFM56, 5B4, DAC-II, Jet A, 5.9, 27.7, 120.1, IDLE, 7, 0.120, 3.60, 40.10, 3.90 
