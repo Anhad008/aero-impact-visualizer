@@ -8,6 +8,15 @@
     "Pressure Ratio": 27.7,
     "Rated Thrust (kN)": 120.1,
     "Phases": {
+      "IDLE/TAXI": {
+        "Power Setting (%)": 7,
+        "Fuel Flow (kg/s)": 0.120,
+        "Emission Indices (g/kg fuel)": {
+          "HC": 3.60,
+          "CO": 40.10,
+          "NOx": 3.90
+        }
+      },
       "TAKE-OFF": {
         "Power Setting (%)": 100,
         "Fuel Flow (kg/s)": 1.140,
@@ -42,15 +51,6 @@
           "HC": 5.30,
           "CO": 29.10,
           "NOx": 6.50
-        }
-      },
-      "IDLE/TAXI": {
-        "Power Setting (%)": 7,
-        "Fuel Flow (kg/s)": 0.120,
-        "Emission Indices (g/kg fuel)": {
-          "HC": 3.60,
-          "CO": 40.10,
-          "NOx": 3.90
         }
       }
     }
