@@ -1,6 +1,6 @@
 Phase,Duration (min),Altitude (ft),Speed (kts),Thrust (%)
-taxi,5,0,0,7
-takeoff,0.5,1500,200,100
-climb,15,35000,280,85
-cruise,60,35000,470,60
-descent,20,0,250,30
+Taxi,5,0,0,7
+Take-Off,0.5,1500,200,100
+Climb Out,15,35000,280,85
+Cruise,60,35000,470,60
+Approach,20,0,250,30
