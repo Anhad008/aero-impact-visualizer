@@ -1,4 +1,4 @@
-phase, duration_min, altitude_ft, speed_kts, thrust_pct
+Phase,Duration (min),Altitude (ft),Speed (kts),Thrust (%)
 taxi,5,0,0,7
 takeoff,0.5,1500,200,100
 climb,15,35000,280,85
