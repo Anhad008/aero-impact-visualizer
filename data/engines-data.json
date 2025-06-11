@@ -1,0 +1,49 @@
+{
+  "CFM56-5B4/2P": {
+    "Engine Family": "CFM56",
+    "Engine Model": "5B4",
+    "Combustor": "DAC-II",
+    "Fuel": "Jet A",
+    "Bypass Ratio": 5.9,
+    "Pressure Ratio": 27.7,
+    "Rated Thrust (kN)": 120.1,
+    "Phases": {
+      "TAKE-OFF": {
+        "Power Setting (%)": 100,
+        "Fuel Flow (kg/s)": 1.140,
+        "Emission Indices (g/kg fuel)": {
+          "HC": 0.10,
+          "CO": 1.40,
+          "NOx": 18.40
+        }
+      },
+      "CLIMB OUT": {
+        "Power Setting (%)": 85,
+        "Fuel Flow (kg/s)": 0.950,
+        "Emission Indices (g/kg fuel)": {
+          "HC": 0.20,
+          "CO": 3.60,
+          "NOx": 13.60
+        }
+      },
+      "APPROACH": {
+        "Power Setting (%)": 30,
+        "Fuel Flow (kg/s)": 0.340,
+        "Emission Indices (g/kg fuel)": {
+          "HC": 5.30,
+          "CO": 29.10,
+          "NOx": 6.50
+        }
+      },
+      "IDLE": {
+        "Power Setting (%)": 7,
+        "Fuel Flow (kg/s)": 0.120,
+        "Emission Indices (g/kg fuel)": {
+          "HC": 3.60,
+          "CO": 40.10,
+          "NOx": 3.90
+        }
+      }
+    }
+  }
+}
