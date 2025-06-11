@@ -44,7 +44,7 @@
           "NOx": 6.50
         }
       },
-      "IDLE": {
+      "IDLE/TAXI": {
         "Power Setting (%)": 7,
         "Fuel Flow (kg/s)": 0.120,
         "Emission Indices (g/kg fuel)": {
