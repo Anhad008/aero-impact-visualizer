@@ -26,6 +26,15 @@
           "NOx": 13.60
         }
       },
+      "CRUISE": {
+        "Power Setting (%)": 60,
+        "Fuel Flow (kg/s)": 0.65,
+        "Emission Indices (g/kg fuel)": {
+          "HC": 0.20,
+          "CO": 1.00,
+          "NOx": 13.50
+        }
+      },
       "APPROACH": {
         "Power Setting (%)": 30,
         "Fuel Flow (kg/s)": 0.340,
