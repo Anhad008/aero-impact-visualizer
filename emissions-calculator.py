@@ -68,7 +68,10 @@ phases_summary_df = pd.DataFrame({
     "NOx emissions (g)":nox_emissions,
     "CO emissions (g)":co_emissions,
 })
-phases_summary_df = pd.concat([phases_summary_df, total_data], ignore_index=True)
+
+phases_summary_df = pd.concat([phases_summary_df, total_data], ignore_index=True) # Adding the total data column calculated to the main dataframe
+
+phases_summary_df = phases_summary_df.round(3) # Rounding off the calculated data to 3 decimal places
 
 
 # ---Saving Outputs---
