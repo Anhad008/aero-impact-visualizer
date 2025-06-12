@@ -53,9 +53,9 @@ total_data = pd.DataFrame([{
     "Phase":"Total",
     "Duration (s)":total_duration,
     "Fuel Burned (kg)":total_fuel_burned,
-    "HC emissions (g)":total_hc_emissions,
-    "NOx emissions (g)":total_nox_emissions,
-    "CO emissions (g)":total_co_emissions,
+    "HC Emissions (g)":total_hc_emissions,
+    "NOx Emissions (g)":total_nox_emissions,
+    "CO Emissions (g)":total_co_emissions,
 }])
 
 # ---Create Phase-wise Emissions Summary DataFrame---
@@ -64,9 +64,9 @@ phases_summary_df = pd.DataFrame({
     "Duration (s)":profile_duration_seconds,
     "Fuel Flow (kg/s)":fuel_flow_rates,
     "Fuel Burned (kg)":fuel_burned,
-    "HC emissions (g)":hc_emissions,
-    "NOx emissions (g)":nox_emissions,
-    "CO emissions (g)":co_emissions,
+    "HC Emissions (g)":hc_emissions,
+    "NOx Emissions (g)":nox_emissions,
+    "CO Emissions (g)":co_emissions,
 })
 
 phases_summary_df = pd.concat([phases_summary_df, total_data], ignore_index=True) # Adding the total data column calculated to the main dataframe
