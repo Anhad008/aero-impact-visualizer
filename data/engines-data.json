@@ -8,6 +8,15 @@
     "Pressure Ratio": 27.7,
     "Rated Thrust (kN)": 120.1,
     "Phases": {
+      "IDLE": {
+        "Power Setting (%)": 7,
+        "Fuel Flow (kg/s)": 0.120,
+        "Emission Indices (g/kg fuel)": {
+          "HC": 3.60,
+          "CO": 40.10,
+          "NOx": 3.90
+        }
+      },
       "TAKE-OFF": {
         "Power Setting (%)": 100,
         "Fuel Flow (kg/s)": 1.140,
@@ -19,6 +28,15 @@
       },
       "CLIMB OUT": {
         "Power Setting (%)": 85,
+        "Fuel Flow (kg/s)": 0.650,
+        "Emission Indices (g/kg fuel)": {
+          "HC": 0.20,
+          "CO": 1.00,
+          "NOx": 13.50
+        }
+      },
+      "CRUISE": {
+        "Power Setting (%)": 60,
         "Fuel Flow (kg/s)": 0.950,
         "Emission Indices (g/kg fuel)": {
           "HC": 0.20,
@@ -33,15 +51,6 @@
           "HC": 5.30,
           "CO": 29.10,
           "NOx": 6.50
-        }
-      },
-      "IDLE": {
-        "Power Setting (%)": 7,
-        "Fuel Flow (kg/s)": 0.120,
-        "Emission Indices (g/kg fuel)": {
-          "HC": 3.60,
-          "CO": 40.10,
-          "NOx": 3.90
         }
       }
     }

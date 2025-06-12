@@ -25,28 +25,28 @@ for phase_name, details in phases.items():
 phases_df = pd.DataFrame(phase_data)     # Dataframe containing data for all phases
 
 fuel_flow_rates = phases_df["Fuel Flow (kg/s)"] # Extract the fuel flow rates for All Phases (in kg per second)
-ei_HC = phases_df["HC (g/kg)"] # Extract the Emission Index for Hydrocarbons for All Phases (g/kg of fuel)
-ei_CO = phases_df["CO (g/kg)"] # Extract the Emission Index for Carbon Monoxide for All Phases (g/kg of fuel)
-ei_NOx = phases_df["NOx (g/kg)"] # Extract the Emission Index for Nitrogen Oxides for All Phases (g/kg of fuel)
+ei_HC = phases_df["HC (g/kg)"]                  # Extract the Emission Index for Hydrocarbons for All Phases (g/kg of fuel)
+ei_CO = phases_df["CO (g/kg)"]                  # Extract the Emission Index for Carbon Monoxide for All Phases (g/kg of fuel)
+ei_NOx = phases_df["NOx (g/kg)"]                # Extract the Emission Index for Nitrogen Oxides for All Phases (g/kg of fuel)
 
 phases = test_flight_profile["Phase"] # Extract Phase data from CSV datafile
-profile_duration_min = test_flight_profile['Duration (min)']    # Duration for All Phases (minutes)
+profile_duration_min = test_flight_profile['Duration (min)'] # Duration for All Phases (minutes)
 
 
 # ---Calculations--- 
-profile_duration_seconds = profile_duration_min * 60    # Duration for All Phases (seconds)
+profile_duration_seconds = profile_duration_min * 60  # Duration for All Phases (seconds)
 
 fuel_burned = fuel_flow_rates * profile_duration_seconds # Fuel burned for All Phases (kg)
 
-hc_emissions = ei_HC * fuel_burned # HC emissions in Fuel Burned
-co_emissions = ei_CO * fuel_burned # CO emissions in Fuel Burned
-nox_emissions = ei_NOx * fuel_burned # NOx emissions in Fuel Burned
+hc_emissions = ei_HC * fuel_burned      # HC emissions in Fuel Burned
+co_emissions = ei_CO * fuel_burned      # CO emissions in Fuel Burned
+nox_emissions = ei_NOx * fuel_burned    # NOx emissions in Fuel Burned
 
-total_duration = profile_duration_seconds.sum()
-total_fuel_burned = fuel_burned.sum() # Total Fuel Burned
-total_co_emissions = co_emissions.sum() # Total Carbon Monoxide Emissions
-total_hc_emissions = hc_emissions.sum() # Total Hydrocarbon Emissions
-total_nox_emissions = nox_emissions.sum() # Total Nitrogen Oxides Emissions
+total_duration = profile_duration_seconds.sum()     # Total Duration of Flight
+total_fuel_burned = fuel_burned.sum()               # Total Fuel Burned
+total_co_emissions = co_emissions.sum()             # Total Carbon Monoxide Emissions
+total_hc_emissions = hc_emissions.sum()             # Total Hydrocarbon Emissions
+total_nox_emissions = nox_emissions.sum()           # Total Nitrogen Oxides Emissions
 
 # ---Create a DataFrame for Total Emissions Summary---
 total_data = pd.DataFrame([{
