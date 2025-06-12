@@ -1,7 +1,7 @@
-Phase,Duration (s),Fuel Flow (kg/s),Fuel Burned (kg),HC emissions (g),NOx emissions (g),CO emissions (g)
-taxi,300.0,0.12,36.0,129.6,140.4,1443.6
-takeoff,30.0,1.14,34.2,3.42,629.28,47.88
-climb,900.0,0.65,585.0,117.0,7897.5,585.0
-cruise,3600.0,0.95,3420.0,684.0,46512.0,12312.0
-descent,1200.0,0.34,408.0,2162.4,2652.0,11872.8
+Phase,Duration (s),Fuel Flow (kg/s),Fuel Burned (kg),HC Emissions (g),NOx Emissions (g),CO Emissions (g)
+Idle/Taxi,300.0,0.12,36.0,129.6,140.4,1443.6
+Take-Off,30.0,1.14,34.2,3.42,629.28,47.88
+Climb Out,900.0,0.65,585.0,117.0,7897.5,585.0
+Cruise,3600.0,0.95,3420.0,684.0,46512.0,12312.0
+Descent,1200.0,0.34,408.0,2162.4,2652.0,11872.8
 Total,6030.0,,4483.2,3096.42,57831.18,26261.28
