@@ -1,4 +1,5 @@
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import pandas as pd
 
 def plot_bar_summary(summary_df):
@@ -291,6 +292,71 @@ def plot_pie_summary(summary_df):
         ),
         margin=dict(l=20, r=20, t=80, b=80),
         font=dict(size=12),
+    )
+
+    fig.show()
+
+def plot_fuel_flow_summary(summary_df):
+    phases_df = summary_df[summary_df['Phase'] != 'Total'].copy()
+
+    # Compute key time points
+    phases_df['Start Time (s)'] = phases_df['Duration (s)'].cumsum() - phases_df['Duration (s)']
+    phases_df['End Time (s)'] = phases_df['Duration (s)'].cumsum()
+    phases_df['Mid Time (s)'] = (phases_df['Start Time (s)'] + phases_df['End Time (s)']) / 2
+
+    # Get values for flat extrapolation
+    start_time = phases_df['Start Time (s)'].iloc[0]
+    end_time = phases_df['End Time (s)'].iloc[-1]
+    first_flow = phases_df['Fuel Flow (kg/s)'].iloc[0]
+    last_flow = phases_df['Fuel Flow (kg/s)'].iloc[-1]
+
+    # Construct extended x and y
+    x_extended = [start_time] + phases_df['Mid Time (s)'].tolist() + [end_time]
+    y_extended = [first_flow] + phases_df['Fuel Flow (kg/s)'].tolist() + [last_flow]
+
+    # Plot with filled area
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=x_extended,
+        y=y_extended,
+        mode='lines+markers',
+        name='Fuel Flow (kg/s)',
+        line=dict(color='rgba(255,0,0,0.3)'),
+        marker=dict(color="#C44E52"),
+        text=["Flat Start"] + phases_df['Phase'].tolist() + ["Flat End"],
+        hovertemplate="Fuel Flow: %{y:.2f} kg/s<br>Time: %{x:.0f} s<extra></extra>"
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=x_extended,
+        y=y_extended,
+        mode='lines',
+        fill='tozeroy',
+        name='Fuel Used (kg)',
+        line=dict(color='rgba(255,0,0,0.3)'),
+        marker=dict(color="#C44E52"),
+        text=["Flat Start"] + phases_df['Phase'].tolist() + ["Flat End"],
+        hovertemplate="Fuel Flow: %{y:.2f} kg/s<br>Time: %{x:.0f} s<extra></extra>"
+    ))
+
+    fig.update_layout(
+        xaxis_title='Time (s)',
+        yaxis_title='Fuel Flow (kg/s)',
+        title='<b>Fuel Flow (kg/s) over Time (s)</b><br><sup>Midpoints used for phase-level fuel flow; extended flat to full mission time</sup>',
+        template='simple_white',
+        showlegend=True,
+        xaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+            gridcolor='lightgrey',
+            range=[0 , x_extended[-1]]
+        ),
+        yaxis=dict(
+            showgrid=True, 
+            gridwidth=1, 
+            gridcolor='lightgrey'
+        )
     )
 
     fig.show()
