@@ -4,9 +4,9 @@ import pandas as pd
 
 def plot_bar_summary(summary_df):
     phases = summary_df["Phase"]
-    co_emm = summary_df["CO emissions (g)"]
-    nox_emm = summary_df["NOx emissions (g)"]
-    hc_emm = summary_df["HC emissions (g)"]
+    co_emm = summary_df["CO Emissions (g)"]
+    nox_emm = summary_df["NOx Emissions (g)"]
+    hc_emm = summary_df["HC Emissions (g)"]
 
     fig = go.Figure([
         go.Bar(
@@ -297,22 +297,22 @@ def plot_pie_summary(summary_df):
     fig.show()
 
 def plot_fuel_flow_summary(summary_df):
-    phases_df = summary_df[summary_df['Phase'] != 'Total'].copy()
+    summary_df_excl_total = summary_df[summary_df['Phase'] != 'Total'].copy()
 
     # Compute key time points
-    phases_df['Start Time (s)'] = phases_df['Duration (s)'].cumsum() - phases_df['Duration (s)']
-    phases_df['End Time (s)'] = phases_df['Duration (s)'].cumsum()
-    phases_df['Mid Time (s)'] = (phases_df['Start Time (s)'] + phases_df['End Time (s)']) / 2
+    summary_df_excl_total['Start Time (s)'] = summary_df_excl_total['Duration (s)'].cumsum() - summary_df_excl_total['Duration (s)']
+    summary_df_excl_total['End Time (s)'] = summary_df_excl_total['Duration (s)'].cumsum()
+    summary_df_excl_total['Mid Time (s)'] = (summary_df_excl_total['Start Time (s)'] + summary_df_excl_total['End Time (s)']) / 2
 
     # Get values for flat extrapolation
-    start_time = phases_df['Start Time (s)'].iloc[0]
-    end_time = phases_df['End Time (s)'].iloc[-1]
-    first_flow = phases_df['Fuel Flow (kg/s)'].iloc[0]
-    last_flow = phases_df['Fuel Flow (kg/s)'].iloc[-1]
+    start_time = summary_df_excl_total['Start Time (s)'].iloc[0]
+    end_time = summary_df_excl_total['End Time (s)'].iloc[-1]
+    first_flow = summary_df_excl_total['Fuel Flow (kg/s)'].iloc[0]
+    last_flow = summary_df_excl_total['Fuel Flow (kg/s)'].iloc[-1]
 
     # Construct extended x and y
-    x_extended = [start_time] + phases_df['Mid Time (s)'].tolist() + [end_time]
-    y_extended = [first_flow] + phases_df['Fuel Flow (kg/s)'].tolist() + [last_flow]
+    x_extended = [start_time] + summary_df_excl_total['Mid Time (s)'].tolist() + [end_time]
+    y_extended = [first_flow] + summary_df_excl_total['Fuel Flow (kg/s)'].tolist() + [last_flow]
 
     # Plot with filled area
     fig = go.Figure()
@@ -324,7 +324,7 @@ def plot_fuel_flow_summary(summary_df):
         name='Fuel Flow (kg/s)',
         line=dict(color='rgba(255,0,0,0.3)'),
         marker=dict(color="#C44E52"),
-        text=["Flat Start"] + phases_df['Phase'].tolist() + ["Flat End"],
+        text=["Flat Start"] + summary_df_excl_total['Phase'].tolist() + ["Flat End"],
         hovertemplate="Fuel Flow: %{y:.2f} kg/s<br>Time: %{x:.0f} s<extra></extra>"
     ))
 
@@ -336,7 +336,7 @@ def plot_fuel_flow_summary(summary_df):
         name='Fuel Used (kg)',
         line=dict(color='rgba(255,0,0,0.3)'),
         marker=dict(color="#C44E52"),
-        text=["Flat Start"] + phases_df['Phase'].tolist() + ["Flat End"],
+        text=["Flat Start"] + summary_df_excl_total['Phase'].tolist() + ["Flat End"],
         hovertemplate="Fuel Flow: %{y:.2f} kg/s<br>Time: %{x:.0f} s<extra></extra>"
     ))
 
@@ -356,6 +356,97 @@ def plot_fuel_flow_summary(summary_df):
             showgrid=True, 
             gridwidth=1, 
             gridcolor='lightgrey'
+        )
+    )
+
+    fig.show()
+
+def plot_emissions_line_summary(summary_df):
+    summary_df_excl_total = summary_df[summary_df['Phase'] != 'Total'].copy()
+
+    # Extract values
+    phases = summary_df_excl_total["Phase"]
+    co_em = summary_df_excl_total["CO Emissions (g)"]
+    nox_em = summary_df_excl_total["NOx Emissions (g)"]
+    hc_em = summary_df_excl_total["HC Emissions (g)"]
+
+    # Compute key time points
+    summary_df_excl_total['Start Time (s)'] = summary_df_excl_total['Duration (s)'].cumsum() - summary_df_excl_total['Duration (s)']
+    summary_df_excl_total['End Time (s)'] = summary_df_excl_total['Duration (s)'].cumsum()
+    summary_df_excl_total['Mid Time (s)'] = (summary_df_excl_total['Start Time (s)'] + summary_df_excl_total['End Time (s)']) / 2
+
+    # Get values for flat extrapolation
+    start_time = summary_df_excl_total['Start Time (s)'].iloc[0]
+    end_time = summary_df_excl_total['End Time (s)'].iloc[-1]
+    nox_start = summary_df_excl_total['NOx Emissions (g)'].iloc[0]
+    nox_end = summary_df_excl_total['NOx Emissions (g)'].iloc[-1]
+    co_start = summary_df_excl_total['CO Emissions (g)'].iloc[0]
+    co_end = summary_df_excl_total['CO Emissions (g)'].iloc[-1]
+    hc_start = summary_df_excl_total['HC Emissions (g)'].iloc[0]
+    hc_end = summary_df_excl_total['HC Emissions (g)'].iloc[-1]
+
+    # Construct extended x and y
+    time_extended = [start_time] + summary_df_excl_total['Mid Time (s)'].tolist() + [end_time]
+    nox_extended = [nox_start] + summary_df_excl_total['NOx Emissions (g)'].tolist() + [nox_end]
+    co_extended = [co_start] + summary_df_excl_total['CO Emissions (g)'].tolist() + [co_end]
+    hc_extended = [hc_start] + summary_df_excl_total['HC Emissions (g)'].tolist() + [hc_end]
+
+    # Plot with filled area
+    fig = go.Figure()
+
+
+    fig.add_trace(go.Scatter(
+        x=time_extended,
+        y=nox_extended,
+        mode='lines+markers',
+        name='NOx Emitted (g)',
+        line=dict(color='#E69F00'),
+        marker=dict(color="#E69F00"),
+        text=["Flat Start"] + phases.tolist() + ["Flat End"],
+        hovertemplate="NOx Emitted: %{y:.2f} g<br>Time: %{x:.0f} s<br>Phase: %{text}<extra></extra>"
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=time_extended,
+        y=co_extended,
+        mode='lines+markers',
+        name='CO Emitted (g)',
+        line=dict(color='#56B4E9'),
+        marker=dict(color="#56B4E9"),
+        text=["Flat Start"] + phases.tolist() + ["Flat End"],
+        hovertemplate="NOx Emitted: %{y:.2f} g<br>Time: %{x:.0f} s<br>Phase: %{text}<extra></extra>"
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=time_extended,
+        y=hc_extended,
+        mode='lines+markers',
+        name='HC Emitted (g)',
+        line=dict(color='#009E73'),
+        marker=dict(color="#009E73"),
+        text=["Flat Start"] + phases.tolist() + ["Flat End"],
+        hovertemplate="NOx Emitted: %{y:.2f} g<br>Time: %{x:.0f} s<br>Phase: %{text}<extra></extra>"
+    ))
+
+    fig.update_layout(
+        xaxis_title='Time (s)',
+        yaxis_title='Fuel Flow (kg/s)',
+        title='<b>Emissions (g) over Time (s)</b><br><sup>Midpoints used for phase-level Emissions; extended flat to full mission time</sup>',
+        template='simple_white',
+        showlegend=True,
+        xaxis=dict(
+            showgrid=True,
+            gridwidth=1,
+            gridcolor='lightgrey',
+            range=[0 , time_extended[-1]]
+        ),
+        yaxis=dict(
+            type='log',
+            title='Emissions (g)',
+            showgrid=True,
+            gridcolor='lightgrey',
+            gridwidth=1,
+            minor=dict(ticklen=1, showgrid=True)
         )
     )
 
