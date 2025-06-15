@@ -110,6 +110,7 @@ def plot_bar_summary(summary_df):
 def plot_pie_summary(summary_df):
     # Filter data
     summary_df_excl_total = summary_df[summary_df["Phase"] != "Total"]
+    summary_df_total = summary_df[summary_df["Phase"] == "Total"]
 
     # Extract values
     phases = summary_df_excl_total["Phase"]
