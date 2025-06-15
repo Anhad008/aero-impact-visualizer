@@ -105,3 +105,191 @@ def plot_bar_summary(summary_df):
     )
 
     fig.show()
+
+
+def plot_pie_summary(summary_df):
+    # Filter data
+    summary_df_excl_total = summary_df[summary_df["Phase"] != "Total"]
+
+    # Extract values
+    phases = summary_df_excl_total["Phase"]
+    co_em = summary_df_excl_total["CO Emissions (g)"]
+    nox_em = summary_df_excl_total["NOx Emissions (g)"]
+    hc_em = summary_df_excl_total["HC Emissions (g)"]
+
+
+    # Sort by value descending
+    sorted_co_data = sorted(zip(phases, co_em), key=lambda x: x[1], reverse=True)
+    sorted_nox_data = sorted(zip(phases, nox_em), key=lambda x: x[1], reverse=True)
+    sorted_hc_data = sorted(zip(phases, hc_em), key=lambda x: x[1], reverse=True)
+
+    # Your color palette from largest to smallest
+    color_palette_co = ["#4197CA", "#64B6E2", "#9AD3F1", "#BCE3F6", "#DEF2FA"]
+    color_palette_nox = ["#CB8712", "#E69F00", "#F1B733", "#F7CD66", "#FCE399"]
+    color_palette_hc = ["#00664E", "#009E73", "#33B384", "#66C495", "#99D6B1"]
+
+    # Unzip
+    sorted_co_phases, sorted_co_em = zip(*sorted_co_data)
+    sorted_nox_phases, sorted_nox_em = zip(*sorted_nox_data)
+    sorted_hc_phases, sorted_hc_em = zip(*sorted_hc_data)
+
+    # Assign colors
+    sorted_colors_co = color_palette_co[:len(sorted_co_em)]
+    sorted_colors_nox = color_palette_nox[:len(sorted_co_em)]
+    sorted_colors_hc = color_palette_hc[:len(sorted_co_em)]
+
+    sorted_nox_phases = [f"NOx / {phase}" for phase in sorted_nox_phases]
+    sorted_co_phases = [f"CO / {phase}" for phase in sorted_co_phases]
+    sorted_hc_phases = [f"HC / {phase}" for phase in sorted_hc_phases]
+
+    em_data = sorted_nox_em + sorted_co_em + sorted_hc_em
+    em_phases = sorted_nox_phases + sorted_co_phases + sorted_hc_phases
+    em_colors = color_palette_nox + color_palette_co + color_palette_hc
+
+    total_co = summary_df_total["CO Emissions (g)"]
+    total_nox = summary_df_total["NOx Emissions (g)"]
+    total_hc = summary_df_total["HC Emissions (g)"]
+
+    total_em = pd.concat([total_nox, total_co, total_hc])
+
+    fig=go.Figure()
+
+    # Create subplot layout
+    fig = make_subplots(
+        rows=1, cols=4,
+        column_widths=[0.25, 0.25, 0.25, 0.25],
+        specs=[
+            [{"type": "domain"}, {"type": "domain"}, {"type": "domain"}, {"type": "domain"}]
+        ],
+        subplot_titles=(
+            "<b>NOₓ Emissions (g)</b><br><sup>Emission of NOx tracked across Phases</sup>", 
+            "<b>CO Emissions (g)</b><br><sup>Emission of CO tracked across Phases</sup>", 
+            "<b>HC Emissions (g)</b><br><sup>Emission of HC tracked across Phases</sup>",
+            '<b>Engine Emissions Breakdown (g)</b><br><sup>Outer Ring: Total Data; Inner Ring: Phase-Wise Data</sup>'
+        )
+    )
+
+    # INNER - TOTAL
+    fig.add_trace(
+        go.Pie(
+            domain=dict(x=[0.0, 0.5]), 
+            labels=["NOx", "CO", "HC"],
+            textinfo='none',
+            values=total_em,
+            hole=0.3,
+            sort=False,
+            direction='clockwise',
+            rotation=0,
+            showlegend=False,
+            hovertemplate='Pollutant: %{label}<br>Percentage: %{percent}<br>Emissions: %{value:.1f} g<extra></extra>',
+            marker=dict(
+                colors=("#E69F00","#64B6E2","#009E73"),
+                line=dict(
+                    color='white',
+                    width=0.5
+                )
+            )
+        ),
+        row=1, col=4
+    )
+
+    # OUTER - PHASES
+    fig.add_trace(
+        go.Pie(
+            domain=dict(x=[0.0, 0.5]),
+            labels=em_phases,
+            values=em_data,
+            textinfo='none',
+            hole=0.75,
+            sort=False,
+            direction='clockwise',
+            rotation=0,
+            showlegend=False,
+            hovertemplate='Pollutant / Phase: %{label}<br>Percentage: %{percent}<br>Emissions: %{value:.1f} g<extra></extra>',
+            marker=dict(
+                colors=em_colors,
+                line=dict(
+                    color='white',
+                    width=0.5 
+                )
+            )
+        ),
+        row=1, col=4
+    )
+
+    fig.add_trace(
+        go.Pie(
+            labels=sorted_nox_phases,
+            values=sorted_nox_em,
+            name="NOx",
+            pull=[0.05],
+            textinfo='none',
+            legendgroup="NOx",
+            showlegend=True,
+            marker=dict(colors=sorted_colors_nox),
+            hovertemplate='Phase: %{label}<br>Percentage: %{percent}<br>Emissions: %{value:.1f} g<extra></extra>',
+            domain=dict(y=[0.66, 0.86]),  # Shifted further down
+            sort=False,
+            direction="clockwise",
+            rotation=0
+        ),
+        row=1, col=1
+    )
+
+    fig.add_trace(
+        go.Pie(
+            labels=sorted_co_phases,
+            values=sorted_co_em,
+            name="CO",
+            pull=[0.05],
+            textinfo='none',
+            legendgroup="CO",
+            showlegend=True,
+            marker=dict(colors=sorted_colors_co),
+            hovertemplate='Phase: %{label}<br>Percentage: %{percent}<br>Emissions: %{value:.1f} g<extra></extra>',
+            domain=dict(y=[0.36, 0.56]),  # Shifted further down
+            sort=False,
+            direction="clockwise",
+            rotation=0
+        ),
+        row=1, col=2
+    )
+
+    fig.add_trace(
+        go.Pie(
+            labels=sorted_hc_phases,
+            values=sorted_hc_em,
+            name="HC",
+            pull=[0.05],
+            textinfo='none',
+            legendgroup="HC",
+            showlegend=True,
+            marker=dict(colors=sorted_colors_hc),
+            hovertemplate='Phase: %{label}<br>Percentage: %{percent}<br>Emissions: %{value:.1f} g<extra></extra>',
+            domain=dict(y=[0.06, 0.26]),  # Shifted further down
+            sort=False,
+            direction="clockwise",
+            rotation=0
+        ),
+        row=1, col=3
+    )
+
+    # Layout settings
+    fig.update_layout(
+        height=700,
+        template='simple_white',
+        title_font=dict(size=20),
+        legend=dict(
+            orientation='h',
+            yanchor='bottom',
+            y=-0.15, 
+            xanchor='center',
+            x=0.5,
+            title=None,
+            font=dict(size=12)
+        ),
+        margin=dict(l=20, r=20, t=80, b=80),
+        font=dict(size=12),
+    )
+
+    fig.show()
