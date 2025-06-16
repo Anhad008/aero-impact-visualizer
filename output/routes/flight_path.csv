@@ -1,0 +1,6 @@
+Phase,Duration (min),Latitude,Longitude
+Idle/Taxi,5.0,40.64,-73.779
+Take-Off,0.5,41.39925,-75.24199999999999
+Climb Out,15.0,42.158500000000004,-76.705
+Cruise,60.0,42.91775,-78.168
+Descent,20.0,43.677,-79.631
