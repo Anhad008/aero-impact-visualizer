@@ -451,3 +451,4 @@ def plot_emissions_line_summary(summary_df):
     )
 
     fig.show()
+    

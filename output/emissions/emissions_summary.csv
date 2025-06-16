@@ -1,4 +1,4 @@
-Phase,Duration (s),Fuel Flow (kg/s),Fuel Burned (kg),HC Emissions (g),NOx Emissions (g),CO Emissions (g)
+Phase,Duration (s),Fuel Flow (kg/s),Fuel Burned (kg),HC Emissions (g),NOx Emissions (g),CO Emissions (g),Latitude,Longitude
 Idle/Taxi,300.0,0.12,36.0,129.6,140.4,1443.6
 Take-Off,30.0,1.14,34.2,3.42,629.28,47.88
 Climb Out,900.0,0.65,585.0,117.0,7897.5,585.0
