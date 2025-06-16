@@ -40,10 +40,11 @@ with st.expander("📊 Phase Emission Details", expanded=False):
 
         emission_indices = details.get("Emission Indices (g/kg fuel)", {})
         if emission_indices:
-            st.markdown("  - Emission Indices (g/kg fuel):")
-            for gas, val in emission_indices.items():
-                st.markdown(f"    - `{gas}`: `{val}`")
-        st.markdown("---")
+            emission_md = "- Emission Indices(g/kg fuel):\n"
+        for key, value in emission_indices.items():
+            emission_md += f"  - {key}: `{value}`\n"
+
+        st.markdown(emission_md)
     
 
 # Phase selection
@@ -53,17 +54,13 @@ phase_duration = st.number_input(f"Enter duration for {selected_phase} (in s)", 
 # Load and process airport data
 airport_df = pd.read_csv("data/airports.csv")
 
-# Drop only rows where lat/lon is missing
-airport_df = airport_df.dropna(subset=['lat_decimal', 'lon_decimal'])
+# Drop rows where lat/lon & iata/icao code is missing
+airport_df = airport_df.dropna(subset=['lat_decimal', 'lon_decimal', 'iata_code', 'icao_code'])
 
 airport_df['label'] = airport_df.apply(
     lambda row: f"{row['iata_code']}/{row['icao_code']} – {row['name']} – {row['city']} – {row['country']}",
     axis=1
 )
-
-# Replace NaNs in iata_code and icao_code with a placeholder text
-airport_df['iata_code'] = airport_df['iata_code'].fillna("No IATA")
-airport_df['icao_code'] = airport_df['icao_code'].fillna("No ICAO")
 
 # Select origin
 origin_label = st.selectbox("Select Origin Airport", airport_df['label'], key="origin")
@@ -81,6 +78,28 @@ dest_info = airport_df[airport_df['label'] == destination_label].iloc[0]
 # Display route
 st.markdown(f"✈️ **Route:** {origin_info['iata_code']} → {dest_info['iata_code']}")
 
+input_data = {
+        "Engine": selected_engine,
+        "Phase": selected_phase,
+        "Duration (s)": phase_duration,
+        "Origin": origin_info['iata_code'],
+        "Destination": dest_info['iata_code']
+    }
+
+df = pd.DataFrame([input_data])
+
+with st.form("save_form"):
+    submit = st.form_submit_button("Save to CSV")
+    if submit:
+        csv_path = "output/user_inputs.csv"
+        try:
+            # Check if file exists, append without header
+            existing_df = pd.read_csv("output/user_inputs.csv")
+            df.to_csv("output/user_inputs.csv", mode='a', index=False, header=False)
+        except FileNotFoundError:
+            # If file does not exist, write with header
+            df.to_csv("output/user_inputs.csv", index=False)
+        st.success("Data saved to CSV!")
 
 
 
