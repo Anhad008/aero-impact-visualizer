@@ -78,28 +78,28 @@ dest_info = airport_df[airport_df['label'] == destination_label].iloc[0]
 # Display route
 st.markdown(f"✈️ **Route:** {origin_info['iata_code']} → {dest_info['iata_code']}")
 
-input_data = {
-        "Engine": selected_engine,
-        "Phase": selected_phase,
-        "Duration (s)": phase_duration,
-        "Origin": origin_info['iata_code'],
-        "Destination": dest_info['iata_code']
-    }
+input_data = pd.DataFrame([
+            {
+                "IATA_Code": origin_info['iata_code'],
+                "Latitude": origin_info['lat_decimal'],
+                "Longitude": origin_info['lon_decimal']
+            },
+            {
+                "IATA_Code": dest_info['iata_code'],
+                "Latitude": dest_info['lat_decimal'],
+                "Longitude": dest_info['lon_decimal']
+            }
+        ])
 
-df = pd.DataFrame([input_data])
-
+df = input_data
 with st.form("save_form"):
     submit = st.form_submit_button("Save to CSV")
     if submit:
-        csv_path = "output/user_inputs.csv"
-        try:
-            # Check if file exists, append without header
-            existing_df = pd.read_csv("output/user_inputs.csv")
-            df.to_csv("output/user_inputs.csv", mode='a', index=False, header=False)
-        except FileNotFoundError:
-            # If file does not exist, write with header
-            df.to_csv("output/user_inputs.csv", index=False)
-        st.success("Data saved to CSV!")
+        csv_path = "output/origin_destination_data.csv"
+
+        # Overwrite the CSV every time
+        input_data.to_csv(csv_path, index=False)
+        st.success("Save Succesful!")
 
 
 
