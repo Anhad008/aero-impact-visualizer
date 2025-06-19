@@ -95,7 +95,7 @@ df = input_data
 with st.form("save_form"):
     submit = st.form_submit_button("Save to CSV")
     if submit:
-        csv_path = "output/origin_destination_data.csv"
+        csv_path = "output/routes/origin_destination_data.csv"
 
         # Overwrite the CSV every time
         input_data.to_csv(csv_path, index=False)
