@@ -5,6 +5,7 @@ import json
 from plot_emissions import plot_fuel_flow_summary
 import os
 import streamlit.components.v1 as components
+from streamlit.components.v1 import iframe
 
 st.set_page_config(page_title="Flight Emissions Configuration", layout="centered")
 
@@ -83,13 +84,22 @@ filtered_dest_df = airport_df[airport_df['label'] != origin_label]
 # Select destination
 destination_label = st.selectbox("Select Destination Airport", airport_labels, key="destination")
 
-def embed_folium_map(map_path, height = 600):
+def embed_emission_map(map_path, height = 600):
     if os.path.exists(map_path):
         with open(map_path, 'r', encoding= 'utf-8') as f:
             html_data = f.read()
         components.html(html_data, height = height, scrolling= False)
     else:
-        st.error("Map file not found")       
+        st.error("Map file not found")
+
+def embed_noise_map(noise_map_path, height = 600):
+    if os.path.exists(noise_map_path):
+        with open(noise_map_path, 'r', encoding= 'utf-8') as f:
+            html_data = f.read()
+        components.html(html_data, height = height, scrolling= False)
+    else:
+        st.error("Map file not found")        
+        
 
 if origin_label != "-- Select an Airport --" and destination_label != "-- Select an Airport --":
     origin_info_df = airport_df[airport_df['label'] == origin_label]
@@ -141,8 +151,12 @@ if origin_label != "-- Select an Airport --" and destination_label != "-- Select
                 st.plotly_chart(plot_emissions_line_summary(summary_df), use_container_width=True)
                 
                 st.markdown("## 🗺️ Emission Route Map")
-                map_path = ("output/routes/flight_path_emissions_map.html")
-                embed_folium_map(map_path)
+                emission_map_path = ("output/routes/flight_path_emissions_map.html")
+                embed_emission_map(emission_map_path)
+
+                st.markdown('## 🔊 Noise Map Visualization')
+                noise_map_path = ("output/routes/flight_path_noise_map.html")
+                embed_noise_map(noise_map_path)
     else:
         st.error("Could not find selected airport details. Please reselect.")
 else:
