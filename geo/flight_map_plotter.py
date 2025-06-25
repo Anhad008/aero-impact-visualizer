@@ -1,10 +1,10 @@
 import os
 import pandas as pd
+import numpy as np
 import folium
-from folium.plugins import MiniMap
-from folium.plugins import PolyLineTextPath
+from folium.plugins import MiniMap, HeatMap, PolyLineTextPath
 
-def plot_map(start_loc):
+def plot_pollutant_emissions_map(start_loc):
     # File paths
     current_dir = os.path.dirname(__file__)
     airports_csv_path = os.path.join(current_dir, "..", "output/routes", "origin_destination_data.csv")
@@ -102,3 +102,54 @@ def plot_map(start_loc):
 
     # Save to file
     m.save("output/routes/flight_path_emissions_map.html")
+
+def plot_noise_emissions_map(start_loc):
+    # Paths
+    current_dir = os.path.dirname(__file__)
+    airports_csv_path = os.path.join(current_dir, "..", "output/routes", "origin_destination_data.csv")
+    flight_path_csv = os.path.join(current_dir, "..", "output/routes", "flight_path.csv")
+    emissions_csv = os.path.join(current_dir, "..", "output/emissions", "emissions_summary.csv")
+
+    # Load data
+    airports_df = pd.read_csv(airports_csv_path)
+    flight_df = pd.read_csv(flight_path_csv)
+    emissions_df = pd.read_csv(emissions_csv)
+    emissions_df = emissions_df[emissions_df["Phase"] != "Total"]
+    ground_noise = emissions_df["Noise Emissions (EPNdB)"].tolist()
+
+    # Getting Airport Coords
+    origin_data = airports_df.iloc[0]
+    destin_data = airports_df.iloc[1]
+
+    coord_origin = (float(origin_data["Latitude"]), float(origin_data["Longitude"]))
+    coord_destin = (float(destin_data["Latitude"]), float(destin_data["Longitude"]))
+
+    # Prepare interpolated points
+    heat_data = []
+    n_points_per_phase = 1000
+
+    for i in range(len(flight_df)):
+        lat1, lon1 = flight_df.iloc[i]["Latitude"], flight_df.iloc[i]["Longitude"]
+        
+        if i < len(flight_df) - 1:
+            lat2, lon2 = flight_df.iloc[i + 1]["Latitude"], flight_df.iloc[i + 1]["Longitude"]
+        else:
+            lat2, lon2 = coord_destin  # use destination coordinates for last segment
+
+        noise = ground_noise[i]
+
+        for t in np.linspace(0, 1, n_points_per_phase):
+            lat = lat1 + t * (lat2 - lat1)
+            lon = lon1 + t * (lon2 - lon1)
+            # Normalize EPNdB to 0–1 range
+            normalized_noise = max(0, min(1, (noise) / 70))  # Assume 30 dB min audible, 100 dB max possible
+            heat_data.append([lat, lon, normalized_noise])
+
+
+    # Initialize map
+    m = folium.Map(location=start_loc, zoom_start=6)
+    HeatMap(heat_data, radius=25, blur=15, max_zoom=8, min_opacity=0.1).add_to(m)
+    m.add_child(MiniMap(toggle_display=True))
+
+    # Save to file
+    m.save("output/routes/flight_path_noise_map.html")
