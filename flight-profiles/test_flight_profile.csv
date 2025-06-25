@@ -1,6 +1,6 @@
 Phase,Duration (min),Altitude (ft),Speed (kts),Thrust (%)
 Idle/Taxi,5,0,0,7
 Take-Off,0.5,1500,200,100
-Climb Out,15,35000,280,85
+Climb Out,15,15000,280,85
 Cruise,60,35000,470,60
-Descent,20,0,250,30
+Descent,20,15000,250,30
