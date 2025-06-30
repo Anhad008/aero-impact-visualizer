@@ -1,6 +1,11 @@
+import plotly.graph_objects as go
 import streamlit as st
 import pandas as pd
 import json
+from plot_emissions import plot_fuel_flow_summary
+import os
+import streamlit.components.v1 as components
+from streamlit.components.v1 import iframe
 
 st.set_page_config(page_title="Flight Emissions Configuration", layout="centered")
 
@@ -29,7 +34,7 @@ phases_data = engine_info.get("Phases", {})
 
 for i, (key, value) in enumerate(text_fields.items()):
     with col1 if i % 2 == 0 else col2:
-        st.markdown(f"**{key.replace('_', ' ').title()}**: <span style='background-color:#1a1a1a;padding:2px 6px;border-radius:4px;color:lightgreen;'>{value}</span>", unsafe_allow_html=True)
+        st.markdown(f"**{key.replace('_', ' ').title()}**: <span style='background-color:#d1d1d1;padding:2px 6px;border-radius:4px;color:black;'>{value}</span>", unsafe_allow_html=True)
 
 # Handle Phases nicely
 with st.expander("📊 Phase Emission Details", expanded=False):
@@ -57,28 +62,56 @@ airport_df = pd.read_csv("data/airports.csv")
 # Drop rows where lat/lon & iata/icao code is missing
 airport_df = airport_df.dropna(subset=['lat_decimal', 'lon_decimal', 'iata_code', 'icao_code'])
 
+# Format labels
 airport_df['label'] = airport_df.apply(
     lambda row: f"{row['iata_code']}/{row['icao_code']} – {row['name']} – {row['city']} – {row['country']}",
     axis=1
 )
 
+# Insert placeholder at the top
+airport_labels = ["-- Select an Airport --"] + airport_df['label'].tolist()
+
+# Display section header
+st.markdown("### ✈️ Select Airports")
+st.caption("Format: IATA/ICAO – Airport – City – Country")
+
 # Select origin
-origin_label = st.selectbox("Select Origin Airport", airport_df['label'], key="origin")
+origin_label = st.selectbox("Select Origin Airport", airport_labels, key="origin")
 
 # Filter destination options to exclude origin
 filtered_dest_df = airport_df[airport_df['label'] != origin_label]
 
 # Select destination
-destination_label = st.selectbox("Select Destination Airport", filtered_dest_df['label'], key="destination")
+destination_label = st.selectbox("Select Destination Airport", airport_labels, key="destination")
 
-# Retrieve info
-origin_info = airport_df[airport_df['label'] == origin_label].iloc[0]
-dest_info = airport_df[airport_df['label'] == destination_label].iloc[0]
+def embed_emission_map(map_path, height = 600):
+    if os.path.exists(map_path):
+        with open(map_path, 'r', encoding= 'utf-8') as f:
+            html_data = f.read()
+        components.html(html_data, height = height, scrolling= False)
+    else:
+        st.error("Map file not found")
 
-# Display route
-st.markdown(f"✈️ **Route:** {origin_info['iata_code']} → {dest_info['iata_code']}")
+def embed_noise_map(noise_map_path, height = 600):
+    if os.path.exists(noise_map_path):
+        with open(noise_map_path, 'r', encoding= 'utf-8') as f:
+            html_data = f.read()
+        components.html(html_data, height = height, scrolling= False)
+    else:
+        st.error("Map file not found")        
+        
 
-input_data = pd.DataFrame([
+if origin_label != "-- Select an Airport --" and destination_label != "-- Select an Airport --":
+    origin_info_df = airport_df[airport_df['label'] == origin_label]
+    dest_info_df = airport_df[airport_df['label'] == destination_label]
+
+    if not origin_info_df.empty and not dest_info_df.empty:
+        origin_info = origin_info_df.iloc[0]
+        dest_info = dest_info_df.iloc[0]
+
+        st.markdown(f"✈️ **Route:** {origin_info['iata_code']} → {dest_info['iata_code']}")
+
+        input_data = pd.DataFrame([
             {
                 "IATA_Code": origin_info['iata_code'],
                 "Latitude": origin_info['lat_decimal'],
@@ -91,15 +124,45 @@ input_data = pd.DataFrame([
             }
         ])
 
-df = input_data
-with st.form("save_form"):
-    submit = st.form_submit_button("Save to CSV")
-    if submit:
-        csv_path = "output/routes/origin_destination_data.csv"
+        summary_df = pd.read_csv("output/emissions/emissions_summary.csv")
 
-        # Overwrite the CSV every time
-        input_data.to_csv(csv_path, index=False)
-        st.success("Save Succesful!")
+        with st.form("save_form"):
+            submit = st.form_submit_button("Save to CSV")
+            if submit:
+                csv_path = "output/origin_destination_data.csv"
+                input_data.to_csv(csv_path, index=False)
+                st.success("Save Successful!")
+
+                st.markdown("---")
+                st.subheader("📈 Emission Visualizations")
+
+                from plot_emissions import plot_bar_summary, plot_pie_summary, plot_fuel_flow_summary, plot_emissions_line_summary
+
+                st.markdown("### 📊 Bar Plot: Emissions by Phase")
+                st.plotly_chart(plot_bar_summary(summary_df), use_container_width=True)
+
+                st.markdown("### 🥧 Pie Chart: Emission Contribution Breakdown")
+                st.plotly_chart(plot_pie_summary(summary_df), use_container_width=True)
+
+                st.markdown("### ⛽ Area Plot: Fuel Flow Over Time")
+                st.plotly_chart(plot_fuel_flow_summary(summary_df), use_container_width=True)
+
+                st.markdown("### 📉 Line Plot: Emissions Over Time")
+                st.plotly_chart(plot_emissions_line_summary(summary_df), use_container_width=True)
+                
+                st.markdown("## 🗺️ Emission Route Map")
+                emission_map_path = ("output/routes/flight_path_emissions_map.html")
+                embed_emission_map(emission_map_path)
+
+                st.markdown('## 🔊 Noise Map Visualization')
+                noise_map_path = ("output/routes/flight_path_noise_map.html")
+                embed_noise_map(noise_map_path)
+    else:
+        st.error("Could not find selected airport details. Please reselect.")
+else:
+    st.warning("Please select both origin and destination airports.")
+
+
 
 
 

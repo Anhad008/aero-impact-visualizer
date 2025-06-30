@@ -72,8 +72,7 @@ def plot_bar_summary(summary_df):
         ),
         title_font=dict(
             size=22,
-            family="Arial",
-            color="black"
+            family="Arial"
         ),
         font=dict(
             size=13, 
@@ -105,7 +104,7 @@ def plot_bar_summary(summary_df):
         )
     )
 
-    fig.show()
+    return fig
 
 
 def plot_pie_summary(summary_df):
@@ -294,7 +293,7 @@ def plot_pie_summary(summary_df):
         font=dict(size=12),
     )
 
-    fig.show()
+    return fig
 
 def plot_fuel_flow_summary(summary_df):
     summary_df_excl_total = summary_df[summary_df['Phase'] != 'Total'].copy()
@@ -359,7 +358,7 @@ def plot_fuel_flow_summary(summary_df):
         )
     )
 
-    fig.show()
+    return fig
 
 def plot_emissions_line_summary(summary_df):
     summary_df_excl_total = summary_df[summary_df['Phase'] != 'Total'].copy()
@@ -450,5 +449,5 @@ def plot_emissions_line_summary(summary_df):
         )
     )
 
-    fig.show()
+    return fig
     
