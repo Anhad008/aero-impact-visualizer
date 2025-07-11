@@ -167,8 +167,6 @@ def plot_combined_emission_noise_map(start_loc):
     print(f"Map saved to {output_path}")
 
 
-# Run the function
-plot_combined_emission_noise_map(start_loc=(43.677, -79.631))
 
 
     

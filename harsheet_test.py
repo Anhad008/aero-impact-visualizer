@@ -4,6 +4,14 @@ import json
 import os
 import streamlit.components.v1 as components
 
+from emissions_calculator import (
+    calc_noise_emissions,
+    calc_pollutant_emissions
+)
+
+from geo.flight_map_plotter import plot_combined_emission_noise_map
+from geo.route_mapper import map_flight_path
+
 from plot_emissions import (
     plot_bar_summary,
     plot_pie_summary,
@@ -92,7 +100,13 @@ if origin_label != "-- Select an Airport --" and destination_label != "-- Select
         ])
 
         if st.button("Save Flight Data"):
-            input_data.to_csv("output/origin_destination_data.csv", index=False)
+            calc_pollutant_emissions()
+            calc_noise_emissions()
+
+            map_center = map_flight_path()
+            plot_combined_emission_noise_map(map_center)
+
+            input_data.to_csv("flight-profiles/flight_profile.csv", index=False)
             st.success("Saved flight data!")
 
         st.markdown("---")

@@ -4,8 +4,8 @@ import numpy as np
 
 def map_flight_path():
     current_dir = os.path.dirname(__file__)
-    airports_csv_path = os.path.join(current_dir, "..", "output/routes", "origin_destination_data.csv")
-    test_flight_profile_csv_path = os.path.join(current_dir, "..", "flight-profiles", "test_flight_profile.csv")
+    airports_csv_path = os.path.join(current_dir, "..", "output", "origin_destination_data.csv")
+    test_flight_profile_csv_path = os.path.join(current_dir, "..", "flight-profiles", "flight_profile.csv")
 
     airports_df = pd.read_csv(airports_csv_path)
     test_flight_profile_df = pd.read_csv(test_flight_profile_csv_path)

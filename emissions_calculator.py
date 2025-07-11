@@ -5,7 +5,7 @@ import os
 
 def calc_pollutant_emissions(): 
     # ---Reading Data Files---
-    test_flight_profile = pd.read_csv("flight-profiles/test_flight_profile.csv")
+    test_flight_profile = pd.read_csv("flight-profiles/flight_profile.csv")
     with open ("data/engines-data.json") as f:
         data = json.load(f)
 
@@ -87,7 +87,7 @@ def calc_pollutant_emissions():
 
 def calc_noise_emissions():
     # ---Reading Data Files---
-    test_flight_profile = pd.read_csv("flight-profiles/test_flight_profile.csv")
+    test_flight_profile = pd.read_csv("flight-profiles/flight_profile.csv")
     aircraft_engine_combinations = pd.read_csv("data/aircraft_engine_combinations.csv", sep=';')
     emissions_df = pd.read_csv("output/emissions/emissions_summary.csv")
 
